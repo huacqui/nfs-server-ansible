@@ -1,0 +1,30 @@
+- hosts: nfs
+  roles:
+    - role: oasis_roles.system.nfs_server
+      nfs_server_services:
+        - nfs-server
+      nfs_server_shares:
+          # path to share (required)
+        - share_path: /exports
+          # IP networks for which to allow access (required)
+          host_allow: '10.100.100.0/24'
+          # Comma-separated list of mount options (required)
+          opts: rw,sync,all_squash
+          # create the share directory (optional)
+          create_dir: true
+          # owner of the NFS share directory (optional)
+          owner: nobody
+          # group of the NFS share directory (optional)
+          group: nobody
+          # mode of the NFS share directory (optional)
+          # NOTE: Even though this is an integer value, it still must be quoted
+          # here due to the linked issue below:
+          # https://github.com/ansible/ansible/issues/31952
+          mode: '0755'
+    - role: oasis_roles.system.firewalld
+      firewalld_zone: public
+      firewalld_ports_open:
+        # NFSv4 /usr/lib/firewalld/services/nfs.xml
+        - proto: tcp
+          port: 2049
+
