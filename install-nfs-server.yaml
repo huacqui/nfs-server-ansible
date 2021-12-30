@@ -1,4 +1,4 @@
-- hosts: nfs
+- hosts: all
   roles:
     - role: oasis_roles.system.nfs_server
       nfs_server_services:
